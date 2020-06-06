@@ -12,26 +12,22 @@ def update():
     print("Update is called")
 
 
-engine = Engine(800, 600, start, update)
-
-# initialize pygame
-pygame.init()
+engine = Engine(start, update)
 
 # create the screen
-screen = pygame.display.set_mode((800, 600))
-
-# Background
-background = Object('images/background.png', 0, 0, screen)
+screen = engine.createScreen(800, 600)
 
 # Title and Icon
-pygame.display.set_caption("Space Invaders")
-icon = pygame.image.load('images/spaceship.png')
-pygame.display.set_icon(icon)
+engine.setName("Space Invaders")
 
+# Background
+background = Object('images/background.png', 0, 0)
+
+# Initialize score
 score = 0
 
 # Player
-player = Object('images/spaceship.png', 368, 500, screen)
+player = Object('images/spaceship.png', 368, 500)
 playerXChange = 0
 playerXSpeed = 10
 
@@ -49,7 +45,7 @@ currentEnemyYPos = startingEnemyYPos
 for i in range(rowsOfEnemies):
     for i in range(columnsOfEnemies):
         enemy = Object('images/ufo.png', currentEnemyXPos,
-                       currentEnemyYPos, screen)
+                       currentEnemyYPos)
         enemies.append(enemy)
         currentEnemyXPos += enemy.width + xDistanceBetweenEnemies
 
@@ -69,7 +65,7 @@ bulletSpeed = 10
 # Create bullet and add to array
 def fireBullet():
     bullet = Object('images/bullet.png', player.posX +
-                    16, player.posY - 16, screen)
+                    16, player.posY - 16)
     bullets.append(bullet)
 
 
@@ -134,18 +130,18 @@ while running:
                 score += 1
 
     # Background
-    background.render()
+    background.render(screen)
 
     # Display player
-    player.render()
+    player.render(screen)
 
     # Display enemy
     for enemy in enemies:
-        enemy.render()
+        enemy.render(screen)
 
     # render bullets
     for bullet in bullets:
-        bullet.render()
+        bullet.render(screen)
 
     # update display
     pygame.display.update()
