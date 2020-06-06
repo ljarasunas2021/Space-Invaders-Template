@@ -1,6 +1,18 @@
 import pygame
 import random
-from object import object
+from engine import Engine
+from engine.object import Object
+
+
+def start():
+    print("Start is called")
+
+
+def update():
+    print("Update is called")
+
+
+engine = Engine(800, 600, start, update)
 
 # initialize pygame
 pygame.init()
@@ -9,9 +21,9 @@ pygame.init()
 screen = pygame.display.set_mode((800, 600))
 
 # Background
-background = object('images/background.png', 0, 0, screen)
+background = Object('images/background.png', 0, 0, screen)
 
-#Title and Icon
+# Title and Icon
 pygame.display.set_caption("Space Invaders")
 icon = pygame.image.load('images/spaceship.png')
 pygame.display.set_icon(icon)
@@ -19,7 +31,7 @@ pygame.display.set_icon(icon)
 score = 0
 
 # Player
-player = object('images/spaceship.png', 368, 500, screen)
+player = Object('images/spaceship.png', 368, 500, screen)
 playerXChange = 0
 playerXSpeed = 10
 
@@ -36,7 +48,7 @@ currentEnemyYPos = startingEnemyYPos
 
 for i in range(rowsOfEnemies):
     for i in range(columnsOfEnemies):
-        enemy = object('images/ufo.png', currentEnemyXPos,
+        enemy = Object('images/ufo.png', currentEnemyXPos,
                        currentEnemyYPos, screen)
         enemies.append(enemy)
         currentEnemyXPos += enemy.width + xDistanceBetweenEnemies
@@ -56,7 +68,7 @@ bulletSpeed = 10
 
 # Create bullet and add to array
 def fireBullet():
-    bullet = object('images/bullet.png', player.posX +
+    bullet = Object('images/bullet.png', player.posX +
                     16, player.posY - 16, screen)
     bullets.append(bullet)
 

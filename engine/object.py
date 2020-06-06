@@ -1,7 +1,7 @@
 import pygame
 
 
-class object:
+class Object:
 
     img = None
     width = 0
