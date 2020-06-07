@@ -6,14 +6,14 @@ class Engine:
     def __init__(self):
         pygame.init()
 
-    def createScreen(self, resWidth, resHeight):
-        return pygame.display.set_mode((resWidth, resHeight))
+    def create_screen(self, res_width, res_height):
+        return pygame.display.set_mode((res_width, res_height))
 
-    def setName(self, name):
+    def set_name(self, name):
         pygame.display.set_caption(name)
 
-    def getEvents(self):
+    def get_events(self):
         return pygame.event.get()
 
-    def updateDisplay(self):
+    def update_display(self):
         pygame.display.update()

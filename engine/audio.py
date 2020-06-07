@@ -4,12 +4,24 @@ from pygame import mixer
 
 class Audio:
 
-    def __init__(self, path, isBackgroundMusic, volume):
-        if isBackgroundMusic:
+    def __init__(self, path, is_background_music, volume):
+        self.is_background_music = is_background_music
+
+        if is_background_music:
             mixer.music.load(path)
             mixer.music.set_volume(volume)
+        else:
+            self.sound = mixer.Sound(path)
+            self.sound.set_volume(volume)
+
+    def change_volume(self, volume):
+        if self.is_background_music:
+            mixer.music.set_volume(volume)
+        else:
+            self.sound.set_volume(volume)
+
+    def play(self):
+        if self.is_background_music:
             mixer.music.play(-1)
         else:
-            sound = mixer.Sound(path)
-            sound.set_volume(volume)
-            sound.play()
+            self.sound.play()
