@@ -2,17 +2,10 @@ import pygame
 import random
 from engine import Engine
 from engine.object import Object
+from engine.text import Text
+from engine.audio import Audio
 
-
-def start():
-    print("Start is called")
-
-
-def update():
-    print("Update is called")
-
-
-engine = Engine(start, update)
+engine = Engine()
 
 # create the screen
 screen = engine.createScreen(800, 600)
@@ -22,6 +15,9 @@ engine.setName("Space Invaders")
 
 # Background
 background = Object('images/background.png', 0, 0)
+
+# Music
+Audio('audio/background.wav', True, 0.25)
 
 # Initialize score
 score = 0
@@ -42,11 +38,12 @@ yDistanceBetweenEnemies = 40
 currentEnemyXPos = startingEnemyXPos
 currentEnemyYPos = startingEnemyYPos
 
+# create enemies
 for i in range(rowsOfEnemies):
-    for i in range(columnsOfEnemies):
-        enemy = Object('images/ufo.png', currentEnemyXPos,
-                       currentEnemyYPos)
+    for j in range(columnsOfEnemies):
+        enemy = Object('images/ufo.png', currentEnemyXPos, currentEnemyYPos)
         enemies.append(enemy)
+
         currentEnemyXPos += enemy.width + xDistanceBetweenEnemies
 
     currentEnemyYPos += enemy.height + yDistanceBetweenEnemies
@@ -59,39 +56,42 @@ enemyYChange = 0
 
 # Initialize bullet array
 bullets = []
-bulletSpeed = 10
+bulletSpeed = 20
 
 
 # Create bullet and add to array
 def fireBullet():
-    bullet = Object('images/bullet.png', player.posX +
-                    16, player.posY - 16)
+    bullet = Object('images/bullet.png', player.posX + 16, player.posY - 16)
     bullets.append(bullet)
+    Audio('audio/laser.wav', False, 0.25)
 
 
 # Game Loop
 running = True
 while running:
-    for event in pygame.event.get():
-        # Check if window should close
+    for event in engine.getEvents():
         if event.type == pygame.QUIT:
             running = False
 
         # Movement if key press
         if event.type == pygame.KEYDOWN:
+
             if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                 playerXChange = -playerXSpeed
             if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                 playerXChange = playerXSpeed
+
             if event.key == pygame.K_SPACE:
                 fireBullet()
+
         if event.type == pygame.KEYUP:
+
             if (event.key == pygame.K_LEFT or event.key == pygame.K_a) and playerXChange < 0:
                 playerXChange = 0
             if (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and playerXChange > 0:
                 playerXChange = 0
 
-                # Apply the movement
+    # Apply the movement
     player.posX += playerXChange
 
     # Set Boundaries to player position
@@ -100,33 +100,35 @@ while running:
     elif player.posX >= 736:
         player.posX = 736
 
-    newEnemyXChange = enemyXChange
-    newEnemyYChange = 0
-
     # Apply the movement and check for boundaries
+    atLeftBoundary = False
+    atRightBoundary = False
+
     for enemy in enemies:
         enemy.posX += enemyXChange
         enemy.posY += enemyYChange
 
         if enemy.posX <= 0:
-            newEnemyXChange = enemyXSpeed
-            newEnemyYChange = enemyYSpeed
-        elif enemy.posX > 736:
-            newEnemyXChange = -enemyXSpeed
-            newEnemyYChange = enemyYSpeed
+            atLeftBoundary = True
+        elif enemy.posX >= 736:
+            atRightBoundary = True
 
-    # Set boundaries
     for enemy in enemies:
-        enemyXChange = newEnemyXChange
-        enemy.posY += newEnemyYChange
+        if atLeftBoundary:
+            enemyXChange = enemyXSpeed
+            enemy.posY += enemyYSpeed
+        elif atRightBoundary:
+            enemyXChange = -enemyXSpeed
+            enemy.posY += enemyYSpeed
 
-        # Move bullets and check collisions
+    # Move bullets and check collisions
     for bullet in bullets:
         bullet.posY -= bulletSpeed
         for enemy in enemies:
             if bullet.checkCollision(enemy):
                 bullets.remove(bullet)
                 enemies.remove(enemy)
+                Audio('audio/explosion.wav', False, 0.25)
                 score += 1
 
     # Background
@@ -143,5 +145,8 @@ while running:
     for bullet in bullets:
         bullet.render(screen)
 
+    scoreText = Text("Score: " + str(score), 10, 10)
+    scoreText.render(screen)
+
     # update display
-    pygame.display.update()
+    engine.updateDisplay()
