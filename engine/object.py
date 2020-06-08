@@ -21,8 +21,8 @@ class Object:
         engine.add_object(self)
 
     def render(self, screen):
-        if not self.hidden:
-            screen.blit(self.img, (self.pos_x, self.pos_y))
+        # if not self.hidden:
+        screen.blit(self.img, (self.pos_x, self.pos_y))
 
     def check_collision(self, obj):
         selfRect = self.img.get_rect().copy()
@@ -38,6 +38,5 @@ class Object:
         self.hidden = False
 
     def destroy(self):
-        self.hidden = True
         self.engine.remove_object(self)
         self = None

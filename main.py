@@ -9,13 +9,17 @@ from engine.audio import Audio
 def moveLeft():
     global player, PLAYERXSPEED
 
-    player.pos_x -= PLAYERXSPEED
+    player.pos_x -= PLAYERXSPEED * engine.delta_time
+    if player.pos_x < 0:
+        player.pos_x = 0
 
 
 def moveRight():
     global player, PLAYERXSPEED
 
-    player.pos_x += PLAYERXSPEED
+    player.pos_x += PLAYERXSPEED * engine.delta_time
+    if player.pos_x >= 736:
+        player.pos_x = 736
 
 
 # Create bullet and add to array
@@ -45,14 +49,16 @@ explosion_sound = Audio('audio/explosion.wav', False, 0.25)
 
 # Initialize score
 score = 0
+score_text = Text(engine, "Score: " + str(score), 10, 10)
 
 # Initialize game over text
-game_over_text = None
+game_over_text = Text(engine, "Game Over", 200, 250, 64)
+game_over_text.hide()
 
 # Player
 player = Object(engine, 'images/spaceship.png', 368, 500)
 player_x_change = 0
-PLAYERXSPEED = 10
+PLAYERXSPEED = 200
 
 # Enemy
 enemies = []
@@ -77,14 +83,13 @@ for i in range(ROWSOFENEMIES):
     current_enemy_y_pos += enemy.height + YDISTANCEBETWEENENEMIES
     current_enemy_x_pos = STARTINGENEMYXPOS
 
-ENEMYXSPEED = 10
+ENEMYXSPEED = 200
 enemy_x_change = ENEMYXSPEED
-ENEMYYSPEED = 40
-enemy_y_change = 0
+ENEMYYSPEED = 400
 
 # Initialize bullet array
 bullets = []
-BULLETSPEED = 20
+BULLETSPEED = 600
 
 engine.on_key_down(pygame.K_LEFT, moveLeft)
 engine.on_key_down(pygame.K_a, moveLeft)
@@ -94,21 +99,14 @@ engine.on_key_pressed(pygame.K_SPACE, fire_bullet)
 
 
 def update():
-    global player, enemies, bullets, enemy_x_change, score, game_over_text
-
-    # Set Boundaries to player position
-    if player.pos_x <= 0:
-        player.pos_x = 0
-    elif player.pos_x >= 736:
-        player.pos_x = 736
+    global enemies, bullets, enemy_x_change, score, game_over_text
 
     # Apply the movement and check for boundaries
     at_left_boundary = False
     at_right_boundary = False
 
     for enemy in enemies:
-        enemy.pos_x += enemy_x_change
-        enemy.pos_y += enemy_y_change
+        enemy.pos_x += enemy_x_change * engine.delta_time
 
         if enemy.pos_x <= 0:
             at_left_boundary = True
@@ -118,14 +116,14 @@ def update():
     for enemy in enemies:
         if at_left_boundary:
             enemy_x_change = ENEMYXSPEED
-            enemy.pos_y += ENEMYYSPEED
+            enemy.pos_y += ENEMYYSPEED * engine.delta_time
         elif at_right_boundary:
             enemy_x_change = -ENEMYXSPEED
-            enemy.pos_y += ENEMYYSPEED
+            enemy.pos_y += ENEMYYSPEED * engine.delta_time
 
     # Move bullets and check collisions
     for bullet in bullets:
-        bullet.pos_y -= BULLETSPEED
+        bullet.pos_y -= BULLETSPEED * engine.delta_time
         for enemy in enemies:
             if bullet.check_collision(enemy):
                 bullet.destroy()
@@ -135,28 +133,13 @@ def update():
                 explosion_sound.play()
                 score += 1
 
-    # # Display player
-    # player.render(screen)
-
-    # # Display enemy
-    # for enemy in enemies:
-    #     enemy.render(screen)
-
-    # # render bullets
-    # for bullet in bullets:
-    #     bullet.render(screen)
-
     # Render score text
-    # score_text = Text("Score: " + str(score), 10, 10)
-    # score_text.render(screen)
+    score_text.change_text("Score: " + str(score))
 
     # Check for Game Over
-    # for enemy in enemies:
-    #     if player.check_collision(enemy):
-    #         game_over_text = Text("Game Over", 200, 250, 64)
-
-    # if game_over_text != None:
-    #     game_over_text.render(screen)
+    for enemy in enemies:
+        if player.check_collision(enemy):
+            game_over_text.show()
 
 
 engine.start(update)

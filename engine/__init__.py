@@ -4,12 +4,15 @@ from object import Object
 
 class Engine:
 
+    delta_time = 0
+
     def __init__(self):
 
         self.key_down_handlers = {}
         self.key_up_handlers = {}
         self.mouse_handlers = {}
         self.key_pressed_handlers = {}
+        self.collision_handlers = {}
         self.keys = set()
         self.background = None
         self.objects = []
@@ -17,8 +20,17 @@ class Engine:
         pygame.init()
 
     def start(self, update):
+        ticks_last_frame = 0
+
         running = True
         while running:
+
+            t = pygame.time.get_ticks()
+            self.delta_time = (t - ticks_last_frame) / 1000.0
+            ticks_last_frame = t
+
+            print(self.delta_time)
+
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
@@ -44,10 +56,10 @@ class Engine:
                 if key in self.key_down_handlers:
                     self.key_down_handlers[key]()
 
+            update()
+
             if self.background != None:
                 self.background.render(self.screen)
-
-            update()
 
             for object in self.objects:
                 object.render(self.screen)
@@ -83,5 +95,4 @@ class Engine:
         self.objects.append(object)
 
     def remove_object(self, object):
-        if object in self.objects:
-            self.objects.remove(object)
+        self.objects.remove(object)
