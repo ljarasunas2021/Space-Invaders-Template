@@ -5,6 +5,27 @@ from engine.object import Object
 from engine.text import Text
 from engine.audio import Audio
 
+
+def moveLeft():
+    global player, PLAYERXSPEED
+
+    player.pos_x -= PLAYERXSPEED
+
+
+def moveRight():
+    global player, PLAYERXSPEED
+
+    player.pos_x += PLAYERXSPEED
+
+
+# Create bullet and add to array
+def fire_bullet():
+    bullet = Object(engine, 'images/bullet.png',
+                    player.pos_x + 16, player.pos_y - 16)
+    bullets.append(bullet)
+    laser_sound.play()
+
+
 engine = Engine()
 
 # create the screen
@@ -14,7 +35,7 @@ screen = engine.create_screen(800, 600)
 engine.set_name("Space Invaders")
 
 # Background
-background = Object('images/background.png', 0, 0)
+engine.set_background(engine, 'images/background.png', screen)
 
 # Set Audio
 background_music = Audio('audio/background.wav', True, 0.25)
@@ -29,7 +50,7 @@ score = 0
 game_over_text = None
 
 # Player
-player = Object('images/spaceship.png', 368, 500)
+player = Object(engine, 'images/spaceship.png', 368, 500)
 player_x_change = 0
 PLAYERXSPEED = 10
 
@@ -47,7 +68,7 @@ current_enemy_y_pos = STARTINGENEMYYPOS
 # create enemies
 for i in range(ROWSOFENEMIES):
     for j in range(COLUMNSOFENEMIES):
-        enemy = Object('images/ufo.png', current_enemy_x_pos,
+        enemy = Object(engine, 'images/ufo.png', current_enemy_x_pos,
                        current_enemy_y_pos)
         enemies.append(enemy)
 
@@ -65,40 +86,15 @@ enemy_y_change = 0
 bullets = []
 BULLETSPEED = 20
 
+engine.on_key_down(pygame.K_LEFT, moveLeft)
+engine.on_key_down(pygame.K_a, moveLeft)
+engine.on_key_down(pygame.K_RIGHT, moveRight)
+engine.on_key_down(pygame.K_d, moveRight)
+engine.on_key_pressed(pygame.K_SPACE, fire_bullet)
 
-# Create bullet and add to array
-def fire_bullet():
-    bullet = Object('images/bullet.png', player.pos_x + 16, player.pos_y - 16)
-    bullets.append(bullet)
-    laser_sound.play()
 
-
-# Game Loop
-running = True
-while running:
-    for event in engine.get_events():
-        if event.type == pygame.QUIT:
-            running = False
-
-        # Movement if key press
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                player_x_change = -PLAYERXSPEED
-            if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                player_x_change = PLAYERXSPEED
-
-            if event.key == pygame.K_SPACE:
-                fire_bullet()
-
-        if event.type == pygame.KEYUP:
-
-            if (event.key == pygame.K_LEFT or event.key == pygame.K_a) and player_x_change < 0:
-                player_x_change = 0
-            if (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and player_x_change > 0:
-                player_x_change = 0
-
-    # Apply the movement
-    player.pos_x += player_x_change
+def update():
+    global player, enemies, bullets, enemy_x_change, score, game_over_text
 
     # Set Boundaries to player position
     if player.pos_x <= 0:
@@ -132,36 +128,35 @@ while running:
         bullet.pos_y -= BULLETSPEED
         for enemy in enemies:
             if bullet.check_collision(enemy):
+                bullet.destroy()
                 bullets.remove(bullet)
+                enemy.destroy()
                 enemies.remove(enemy)
                 explosion_sound.play()
                 score += 1
 
-    # Background
-    background.render(screen)
+    # # Display player
+    # player.render(screen)
 
-    # Display player
-    player.render(screen)
+    # # Display enemy
+    # for enemy in enemies:
+    #     enemy.render(screen)
 
-    # Display enemy
-    for enemy in enemies:
-        enemy.render(screen)
-
-    # render bullets
-    for bullet in bullets:
-        bullet.render(screen)
+    # # render bullets
+    # for bullet in bullets:
+    #     bullet.render(screen)
 
     # Render score text
-    score_text = Text("Score: " + str(score), 10, 10)
-    score_text.render(screen)
+    # score_text = Text("Score: " + str(score), 10, 10)
+    # score_text.render(screen)
 
     # Check for Game Over
-    for enemy in enemies:
-        if player.check_collision(enemy):
-            game_over_text = Text("Game Over", 200, 250, 64)
+    # for enemy in enemies:
+    #     if player.check_collision(enemy):
+    #         game_over_text = Text("Game Over", 200, 250, 64)
 
-    if game_over_text != None:
-        game_over_text.render(screen)
+    # if game_over_text != None:
+    #     game_over_text.render(screen)
 
-    # update display
-    engine.update_display()
+
+engine.start(update)
