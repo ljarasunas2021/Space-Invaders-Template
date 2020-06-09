@@ -133,7 +133,7 @@ spawn_enemies()
 
 ENEMYXSPEED = 200
 enemy_dir = 1
-ENEMYYSPEED = 400
+ENEMYYSPEED = 20
 
 # Initialize bullet array
 bullets = []
@@ -166,10 +166,10 @@ def update():
     for enemy in enemies:
         if at_left_boundary:
             enemy_dir = 1
-            enemy.pos_y += ENEMYYSPEED * engine.delta_time
+            enemy.pos_y += ENEMYYSPEED
         elif at_right_boundary:
             enemy_dir = -1
-            enemy.pos_y += ENEMYYSPEED * engine.delta_time
+            enemy.pos_y += ENEMYYSPEED
 
     # Move bullets and check collisions
     for bullet in bullets:
