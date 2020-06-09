@@ -27,7 +27,7 @@ class Button:
             if self.destroy_on_click:
                 self.destroy()
 
-    def __init__(self, pos_x, pos_y, width, height, handler=None, text="", font_size=32, font_color=(0, 0, 0), button_color=(255, 255, 255), hover_color=None, destroy_on_click=False, render_order=-5, font_type='freesansbold.ttf'):
+    def __init__(self, pos_x, pos_y, width, height, handler=None, text="", font_size=32, hidden=False, font_color=(0, 0, 0), button_color=(255, 255, 255), hover_color=None, destroy_on_click=False, render_order=-5, font_type='freesansbold.ttf'):
         self.button_color = button_color
         self.pos_x = pos_x
         self.pos_y = pos_y
@@ -40,7 +40,7 @@ class Button:
             self.hover_color = button_color
         else:
             self.hover_color = hover_color
-        self.hidden = False
+        self.hidden = hidden
         self.handler = handler
         self.destroy_on_click = destroy_on_click
         self.destroyed = False

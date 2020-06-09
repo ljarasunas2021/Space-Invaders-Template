@@ -8,13 +8,13 @@ class Object:
     pos_y = 0
     render_order = 0
 
-    def __init__(self, img_path, x, y, render_order=0):
+    def __init__(self, img_path, x, y, render_order=0, hidden=False):
         self.img = pygame.image.load(img_path)
         self.width = self.img.get_rect()[2]
         self.height = self.img.get_rect()[3]
         self.pos_x = x
         self.pos_y = y
-        self.hidden = False
+        self.hidden = hidden
         self.render_order = render_order
         self.destroyed = False
 

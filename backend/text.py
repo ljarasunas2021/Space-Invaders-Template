@@ -6,13 +6,13 @@ class Text:
 
     render_order = -6
 
-    def __init__(self, text, x_position=0, y_position=0, size=32, text_color=(255, 255, 255), render_order=-6, font_type='freesansbold.ttf'):
+    def __init__(self, text, x_position=0, y_position=0, size=32, text_color=(255, 255, 255), hidden=False, render_order=-6, font_type='freesansbold.ttf'):
         self.pos_x = x_position
         self.pos_y = y_position
         self.size = size
         self.text_color = text_color
         self.font_type = font_type
-        self.hidden = False
+        self.hidden = hidden
         self.render_order = render_order
         self.destroyed = False
 

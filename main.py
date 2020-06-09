@@ -133,26 +133,21 @@ engine.set_name("Space Invaders")
 engine.set_background('images/background.png')
 
 # Set Audio
-background_music = Audio('audio/background.wav', True, 0.25)
-background_music.play()
-laser_sound = Audio('audio/laser.wav', False, 0.25)
-explosion_sound = Audio('audio/explosion.wav', False, 0.25)
+background_music = Audio('audio/background.wav', True, True, 0.25)
+laser_sound = Audio('audio/laser.wav', False, False, 0.25)
+explosion_sound = Audio('audio/explosion.wav', False, False, 0.25)
 
 # Set Buttons
 play_again_button = Button(
-    325, 400, 150, 50, restart, "Play Again", 26, (0, 0, 0), (255, 255, 255), (220, 220, 220), False)
-play_again_button.hide()
+    325, 400, 150, 50, restart, "Play Again", 26, True, (0, 0, 0), (255, 255, 255), (220, 220, 220), False)
 
 # Initialize score
 score = 0
 score_text = Text("Score: " + str(score), 10, 10)
 
 # Initialize game over text
-game_over_text = Text("Game Over", 200, 250, 64)
-game_over_text.hide()
-
-good_job_text = Text("Good Job", 225, 250, 64)
-good_job_text.hide()
+game_over_text = Text("Game Over", 200, 250, 64, (255, 255, 255), True)
+good_job_text = Text("Good Job", 225, 250, 64, (255, 255, 255), True)
 
 # Player
 player = Object('images/spaceship.png', 368, 500, -1)

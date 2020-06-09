@@ -4,7 +4,7 @@ from pygame import mixer
 
 class Audio:
 
-    def __init__(self, path, is_background_music, volume):
+    def __init__(self, path, is_background_music, play_right_away=True, volume=1):
         self.is_background_music = is_background_music
 
         if is_background_music:
@@ -13,6 +13,9 @@ class Audio:
         else:
             self.sound = mixer.Sound(path)
             self.sound.set_volume(volume)
+
+        if play_right_away:
+            self.play()
 
     def changeVolume(self, volume):
         if self.is_background_music:
