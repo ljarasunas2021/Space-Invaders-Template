@@ -1,5 +1,6 @@
 import pygame
 from object import Object
+from timer import Timer
 
 
 class Engine:
@@ -8,6 +9,7 @@ class Engine:
 
     def __init__(self):
 
+        self.timers = []
         self.key_down_handlers = {}
         self.key_up_handlers = {}
         self.mouse_handlers = {}
@@ -28,8 +30,6 @@ class Engine:
             t = pygame.time.get_ticks()
             self.delta_time = (t - ticks_last_frame) / 1000.0
             ticks_last_frame = t
-
-            print(self.delta_time)
 
             for event in pygame.event.get():
 
@@ -55,6 +55,9 @@ class Engine:
             for key in self.keys:
                 if key in self.key_down_handlers:
                     self.key_down_handlers[key]()
+
+            for timer in self.timers:
+                timer.update()
 
             update()
 
@@ -96,3 +99,10 @@ class Engine:
 
     def remove_object(self, object):
         self.objects.remove(object)
+
+    def add_timer(self, time, handler):
+        timer = Timer(self, time, handler)
+        self.timers.append(timer)
+
+    def remove_timer(self, timer):
+        self.timers.remove(timer)
