@@ -5,8 +5,8 @@ from engine import Engine
 class Text:
 
     def __init__(self, text, x_position=0, y_position=0, size=32, text_color=(255, 255, 255), font_type='freesansbold.ttf'):
-        self.posX = x_position
-        self.posY = y_position
+        self.pos_x = x_position
+        self.pos_y = y_position
         self.size = size
         self.text_color = text_color
         self.font_type = font_type
@@ -27,6 +27,9 @@ class Text:
     def show(self):
         self.hidden = False
 
+    def destroy(self):
+        Engine.instance.remove_object(self)
+
     def render(self):
         if not self.hidden:
-            self.screen.blit(self.text, (self.posX, self.posY))
+            self.screen.blit(self.text, (self.pos_x, self.pos_y))

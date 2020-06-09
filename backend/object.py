@@ -22,11 +22,9 @@ class Object:
 
         self.screen = self.engine.screen
 
-        print(self.screen)
-
         self.engine.add_object(self)
 
-    def render(self,):
+    def render(self):
         if not self.hidden:
             self.screen.blit(self.img, (self.pos_x, self.pos_y))
 

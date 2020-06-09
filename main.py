@@ -4,6 +4,7 @@ from backend.engine import Engine
 from backend.object import Object
 from backend.text import Text
 from backend.audio import Audio
+from backend.button import Button
 
 
 def moveLeft():
@@ -27,7 +28,6 @@ def activate_can_shoot():
     can_shoot = True
 
 
-# Create bullet and add to array
 def fire_bullet():
     global can_shoot
 
@@ -40,6 +40,54 @@ def fire_bullet():
 
         can_shoot = False
         engine.add_timer(TIMEBETWEENSHOTS, activate_can_shoot)
+
+
+def spawn_enemies():
+    global enemies
+
+    COLUMNSOFENEMIES = 4
+    ROWSOFENEMIES = 2
+    STARTINGENEMYXPOS = 100
+    STARTINGENEMYYPOS = 100
+    XDISTANCEBETWEENENEMIES = 50
+    YDISTANCEBETWEENENEMIES = 40
+    current_enemy_x_pos = STARTINGENEMYXPOS
+    current_enemy_y_pos = STARTINGENEMYYPOS
+
+    # create enemies
+    for i in range(ROWSOFENEMIES):
+        for j in range(COLUMNSOFENEMIES):
+            enemy = Object('images/ufo.png', current_enemy_x_pos,
+                           current_enemy_y_pos)
+            enemies.append(enemy)
+
+            current_enemy_x_pos += enemy.width + XDISTANCEBETWEENENEMIES
+
+        current_enemy_y_pos += enemy.height + YDISTANCEBETWEENENEMIES
+        current_enemy_x_pos = STARTINGENEMYXPOS
+
+
+def change_score():
+    global score_text, score
+
+    score_text.change_text("Score: " + str(score))
+
+
+def restart():
+    global score
+
+    spawn_enemies()
+
+    score = 0
+    change_score()
+
+    if good_job_text is not None:
+        good_job_text.hide()
+
+    if game_over_text is not None:
+        game_over_text.hide()
+
+    play_again_button.hide()
 
 
 engine = Engine()
@@ -59,6 +107,11 @@ background_music.play()
 laser_sound = Audio('audio/laser.wav', False, 0.25)
 explosion_sound = Audio('audio/explosion.wav', False, 0.25)
 
+# Set Buttons
+play_again_button = Button(
+    325, 400, 150, 50, restart, "Play Again", 26, (0, 0, 0), (255, 255, 255), (220, 220, 220), False)
+play_again_button.hide()
+
 # Initialize score
 score = 0
 score_text = Text("Score: " + str(score), 10, 10)
@@ -76,26 +129,7 @@ PLAYERXSPEED = 200
 
 # Enemy
 enemies = []
-COLUMNSOFENEMIES = 4
-ROWSOFENEMIES = 2
-STARTINGENEMYXPOS = 100
-STARTINGENEMYYPOS = 100
-XDISTANCEBETWEENENEMIES = 50
-YDISTANCEBETWEENENEMIES = 40
-current_enemy_x_pos = STARTINGENEMYXPOS
-current_enemy_y_pos = STARTINGENEMYYPOS
-
-# create enemies
-for i in range(ROWSOFENEMIES):
-    for j in range(COLUMNSOFENEMIES):
-        enemy = Object('images/ufo.png', current_enemy_x_pos,
-                       current_enemy_y_pos)
-        enemies.append(enemy)
-
-        current_enemy_x_pos += enemy.width + XDISTANCEBETWEENENEMIES
-
-    current_enemy_y_pos += enemy.height + YDISTANCEBETWEENENEMIES
-    current_enemy_x_pos = STARTINGENEMYXPOS
+spawn_enemies()
 
 ENEMYXSPEED = 200
 enemy_dir = 1
@@ -115,7 +149,7 @@ engine.on_key_pressed(pygame.K_SPACE, fire_bullet)
 
 
 def update():
-    global enemies, bullets, enemy_dir, score, game_over_text
+    global enemies, bullets, enemy_dir, score, game_over_text, play_again_button
 
     # Apply the movement and check for boundaries
     at_left_boundary = False
@@ -150,14 +184,16 @@ def update():
                 score += 1
                 if len(enemies) == 0:
                     good_job_text.show()
+                    play_again_button.show()
 
     # Render score text
-    score_text.change_text("Score: " + str(score))
+    change_score()
 
     # Check for Game Over
     for enemy in enemies:
         if player.check_collision(enemy):
             game_over_text.show()
+            play_again_button.show()
             for enemy in enemies:
                 enemy.destroy()
             enemies = []
