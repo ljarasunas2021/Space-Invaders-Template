@@ -5,6 +5,8 @@ from timer import Timer
 
 class Engine:
 
+    instance = None
+    screen = None
     delta_time = 0
 
     def __init__(self):
@@ -18,6 +20,11 @@ class Engine:
         self.keys = set()
         self.background = None
         self.objects = []
+
+        if Engine.instance is not None:
+            print("Error: Can only instantiate one instance of engine")
+        else:
+            Engine.instance = self
 
         pygame.init()
 
@@ -62,10 +69,10 @@ class Engine:
             update()
 
             if self.background != None:
-                self.background.render(self.screen)
+                self.background.render()
 
             for object in self.objects:
-                object.render(self.screen)
+                object.render()
 
             pygame.display.update()
 
@@ -85,14 +92,14 @@ class Engine:
         self.mouse_handlers[pygame.MOUSEBUTTONDOWN] = handler
 
     def create_screen(self, res_width, res_height):
-        return pygame.display.set_mode((res_width, res_height))
+        self.screen = pygame.display.set_mode((res_width, res_height))
+        return self.screen
 
     def set_name(self, name):
         pygame.display.set_caption(name)
 
-    def set_background(self, engine, background_path, screen):
-        self.background = Object(engine, background_path, 0, 0)
-        self.screen = screen
+    def set_background(self, background_path):
+        self.background = Object(background_path, 0, 0)
 
     def add_object(self, object):
         self.objects.append(object)
@@ -101,7 +108,7 @@ class Engine:
         self.objects.remove(object)
 
     def add_timer(self, time, handler):
-        timer = Timer(self, time, handler)
+        timer = Timer(time, handler)
         self.timers.append(timer)
 
     def remove_timer(self, timer):

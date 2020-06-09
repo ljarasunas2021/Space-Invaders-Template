@@ -3,14 +3,15 @@ import pygame
 
 class Timer:
 
-    def __init__(self, engine, time, handler):
+    def __init__(self, time, handler):
         self.time = time
         self.time_left = time
         self.handler = handler
-        self.engine = engine
 
     def update(self):
-        self.time_left -= self.engine.delta_time
+        from engine import Engine
+
+        self.time_left -= Engine.instance.delta_time
         if self.time_left <= 0:
             self.handler()
-            self.engine.remove_timer(self)
+            Engine.instance.remove_timer(self)

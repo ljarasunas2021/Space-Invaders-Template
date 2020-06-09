@@ -1,9 +1,10 @@
 import pygame
+from engine import Engine
 
 
 class Text:
 
-    def __init__(self, engine, text, x_position=0, y_position=0, size=32, text_color=(255, 255, 255), font_type='freesansbold.ttf'):
+    def __init__(self, text, x_position=0, y_position=0, size=32, text_color=(255, 255, 255), font_type='freesansbold.ttf'):
         self.posX = x_position
         self.posY = y_position
         self.size = size
@@ -14,7 +15,8 @@ class Text:
         self.font = pygame.font.Font(self.font_type, self.size)
         self.text = self.font.render(text, True, self.text_color)
 
-        engine.add_object(self)
+        self.screen = Engine.instance.screen
+        Engine.instance.add_object(self)
 
     def change_text(self, new_text):
         self.text = self.font.render(new_text, True, self.text_color)
@@ -25,6 +27,6 @@ class Text:
     def show(self):
         self.hidden = False
 
-    def render(self, screen):
+    def render(self):
         if not self.hidden:
-            screen.blit(self.text, (self.posX, self.posY))
+            self.screen.blit(self.text, (self.posX, self.posY))

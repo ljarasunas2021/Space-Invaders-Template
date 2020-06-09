@@ -1,9 +1,9 @@
 import pygame
 import random
-from engine import Engine
-from engine.object import Object
-from engine.text import Text
-from engine.audio import Audio
+from backend.engine import Engine
+from backend.object import Object
+from backend.text import Text
+from backend.audio import Audio
 
 
 def moveLeft():
@@ -32,8 +32,8 @@ def fire_bullet():
     global can_shoot
 
     if can_shoot:
-        bullet = Object(engine, 'images/bullet.png',
-                        player.pos_x + 16, player.pos_y - 16)
+        bullet = Object('images/bullet.png', player.pos_x +
+                        16, player.pos_y - 16)
         bullets.append(bullet)
 
         laser_sound.play()
@@ -51,7 +51,7 @@ screen = engine.create_screen(800, 600)
 engine.set_name("Space Invaders")
 
 # Background
-engine.set_background(engine, 'images/background.png', screen)
+engine.set_background('images/background.png')
 
 # Set Audio
 background_music = Audio('audio/background.wav', True, 0.25)
@@ -61,17 +61,17 @@ explosion_sound = Audio('audio/explosion.wav', False, 0.25)
 
 # Initialize score
 score = 0
-score_text = Text(engine, "Score: " + str(score), 10, 10)
+score_text = Text("Score: " + str(score), 10, 10)
 
 # Initialize game over text
-game_over_text = Text(engine, "Game Over", 200, 250, 64)
+game_over_text = Text("Game Over", 200, 250, 64)
 game_over_text.hide()
 
-good_job_text = Text(engine, "Good Job", 225, 250, 64)
+good_job_text = Text("Good Job", 225, 250, 64)
 good_job_text.hide()
 
 # Player
-player = Object(engine, 'images/spaceship.png', 368, 500)
+player = Object('images/spaceship.png', 368, 500)
 PLAYERXSPEED = 200
 
 # Enemy
@@ -88,7 +88,7 @@ current_enemy_y_pos = STARTINGENEMYYPOS
 # create enemies
 for i in range(ROWSOFENEMIES):
     for j in range(COLUMNSOFENEMIES):
-        enemy = Object(engine, 'images/ufo.png', current_enemy_x_pos,
+        enemy = Object('images/ufo.png', current_enemy_x_pos,
                        current_enemy_y_pos)
         enemies.append(enemy)
 

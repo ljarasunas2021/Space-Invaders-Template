@@ -8,8 +8,7 @@ class Object:
     pos_y = 0
     render_order = 0
 
-    def __init__(self, engine, img_path, x, y, render_order=0):
-        self.engine = engine
+    def __init__(self, img_path, x, y, render_order=0):
         self.img = pygame.image.load(img_path)
         self.width = self.img.get_rect()[2]
         self.height = self.img.get_rect()[3]
@@ -18,11 +17,18 @@ class Object:
         self.hidden = False
         self.render_order = render_order
 
-        engine.add_object(self)
+        from engine import Engine
+        self.engine = Engine.instance
 
-    def render(self, screen):
-        # if not self.hidden:
-        screen.blit(self.img, (self.pos_x, self.pos_y))
+        self.screen = self.engine.screen
+
+        print(self.screen)
+
+        self.engine.add_object(self)
+
+    def render(self,):
+        if not self.hidden:
+            self.screen.blit(self.img, (self.pos_x, self.pos_y))
 
     def check_collision(self, obj):
         selfRect = self.img.get_rect().copy()

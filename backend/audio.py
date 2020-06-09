@@ -14,7 +14,7 @@ class Audio:
             self.sound = mixer.Sound(path)
             self.sound.set_volume(volume)
 
-    def change_volume(self, volume):
+    def changeVolume(self, volume):
         if self.is_background_music:
             mixer.music.set_volume(volume)
         else:
