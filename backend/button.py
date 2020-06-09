@@ -14,6 +14,7 @@ class Button:
 
     def destroy(self):
         Engine.instance.remove_object(self)
+        self.destroyed = True
 
     def mouse_is_over(self):
         mouse_pos = pygame.mouse.get_pos()
@@ -42,6 +43,7 @@ class Button:
         self.hidden = False
         self.handler = handler
         self.destroy_on_click = destroy_on_click
+        self.destroyed = False
 
         self.font = pygame.font.Font(self.font_type, self.font_size)
         self.text = self.font.render(text, True, font_color)

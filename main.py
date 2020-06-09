@@ -28,13 +28,42 @@ def activate_can_shoot():
     can_shoot = True
 
 
+def player_enemy_collision(player, enemy):
+    global game_over_text, play_again_button, enemies
+
+    game_over_text.show()
+    play_again_button.show()
+    for enemy in enemies:
+        enemy.destroy()
+    enemies = []
+
+
+def bullet_enemy_collision(bullet, enemy):
+    global bullets, enemies, explosion_sound, score, good_job_text, play_again_button
+
+    bullet.destroy()
+    bullets.remove(bullet)
+    enemy.destroy()
+    enemies.remove(enemy)
+    explosion_sound.play()
+    score += 1
+    change_score()
+
+    if len(enemies) == 0:
+        good_job_text.show()
+        play_again_button.show()
+
+
 def fire_bullet():
-    global can_shoot
+    global can_shoot, enemies
 
     if can_shoot:
         bullet = Object('images/bullet.png', player.pos_x +
                         16, player.pos_y - 16)
         bullets.append(bullet)
+
+        for enemy in enemies:
+            engine.on_collision(bullet, enemy, bullet_enemy_collision)
 
         laser_sound.play()
 
@@ -43,7 +72,7 @@ def fire_bullet():
 
 
 def spawn_enemies():
-    global enemies
+    global enemies, player
 
     COLUMNSOFENEMIES = 4
     ROWSOFENEMIES = 2
@@ -58,8 +87,10 @@ def spawn_enemies():
     for i in range(ROWSOFENEMIES):
         for j in range(COLUMNSOFENEMIES):
             enemy = Object('images/ufo.png', current_enemy_x_pos,
-                           current_enemy_y_pos, -1)
+                           current_enemy_y_pos, -2)
             enemies.append(enemy)
+
+            engine.on_collision(player, enemy, player_enemy_collision)
 
             current_enemy_x_pos += enemy.width + XDISTANCEBETWEENENEMIES
 
@@ -124,7 +155,7 @@ good_job_text = Text("Good Job", 225, 250, 64)
 good_job_text.hide()
 
 # Player
-player = Object('images/spaceship.png', 368, 500)
+player = Object('images/spaceship.png', 368, 500, -1)
 PLAYERXSPEED = 200
 
 # Enemy
@@ -174,29 +205,6 @@ def update():
     # Move bullets and check collisions
     for bullet in bullets:
         bullet.pos_y -= BULLETSPEED * engine.delta_time
-        for enemy in enemies:
-            if bullet.check_collision(enemy):
-                bullet.destroy()
-                bullets.remove(bullet)
-                enemy.destroy()
-                enemies.remove(enemy)
-                explosion_sound.play()
-                score += 1
-                if len(enemies) == 0:
-                    good_job_text.show()
-                    play_again_button.show()
-
-    # Render score text
-    change_score()
-
-    # Check for Game Over
-    for enemy in enemies:
-        if player.check_collision(enemy):
-            game_over_text.show()
-            play_again_button.show()
-            for enemy in enemies:
-                enemy.destroy()
-            enemies = []
 
 
 engine.start(update)

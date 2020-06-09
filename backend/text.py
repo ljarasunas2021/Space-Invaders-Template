@@ -14,6 +14,7 @@ class Text:
         self.font_type = font_type
         self.hidden = False
         self.render_order = render_order
+        self.destroyed = False
 
         self.font = pygame.font.Font(self.font_type, self.size)
         self.text = self.font.render(text, True, self.text_color)
@@ -32,6 +33,7 @@ class Text:
 
     def destroy(self):
         Engine.instance.remove_object(self)
+        self.destroyed = True
 
     def render(self):
         if not self.hidden:

@@ -63,6 +63,12 @@ class Engine:
                 if key in self.key_down_handlers:
                     self.key_down_handlers[key]()
 
+            for key in self.collision_handlers.keys():
+                if key[0].destroyed or key[1].destroyed:
+                    self.collision_handlers.pop(key)
+                elif key[0].check_collision(key[1]):
+                    self.collision_handlers[key](key[0], key[1])
+
             for timer in self.timers:
                 timer.update()
 
@@ -91,6 +97,9 @@ class Engine:
     def on_mouse_click(self, handler):
         self.mouse_handlers[pygame.MOUSEBUTTONDOWN] = handler
 
+    def on_collision(self, obj_1, obj_2, handler):
+        self.collision_handlers[(obj_1, obj_2)] = handler
+
     def create_screen(self, res_width, res_height):
         self.screen = pygame.display.set_mode((res_width, res_height))
         return self.screen
@@ -102,8 +111,6 @@ class Engine:
         self.background = Object(background_path, 0, 0)
 
     def add_object(self, object):
-        print(self.objects)
-
         added = False
         for i in range(len(self.objects)):
             if object.render_order > self.objects[i].render_order and not added:

@@ -16,6 +16,7 @@ class Object:
         self.pos_y = y
         self.hidden = False
         self.render_order = render_order
+        self.destroyed = False
 
         from engine import Engine
         self.engine = Engine.instance
@@ -43,4 +44,5 @@ class Object:
 
     def destroy(self):
         self.engine.remove_object(self)
+        self.destroyed = True
         self = None
