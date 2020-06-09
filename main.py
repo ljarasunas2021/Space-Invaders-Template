@@ -58,7 +58,7 @@ def spawn_enemies():
     for i in range(ROWSOFENEMIES):
         for j in range(COLUMNSOFENEMIES):
             enemy = Object('images/ufo.png', current_enemy_x_pos,
-                           current_enemy_y_pos)
+                           current_enemy_y_pos, -1)
             enemies.append(enemy)
 
             current_enemy_x_pos += enemy.width + XDISTANCEBETWEENENEMIES

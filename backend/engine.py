@@ -66,10 +66,10 @@ class Engine:
             for timer in self.timers:
                 timer.update()
 
-            update()
-
             if self.background != None:
                 self.background.render()
+
+            update()
 
             for object in self.objects:
                 object.render()
@@ -102,7 +102,16 @@ class Engine:
         self.background = Object(background_path, 0, 0)
 
     def add_object(self, object):
-        self.objects.append(object)
+        print(self.objects)
+
+        added = False
+        for i in range(len(self.objects)):
+            if object.render_order > self.objects[i].render_order and not added:
+                self.objects.insert(i, object)
+                added = True
+
+        if not added:
+            self.objects.append(object)
 
     def remove_object(self, object):
         self.objects.remove(object)

@@ -4,6 +4,8 @@ from engine import Engine
 
 class Button:
 
+    render_order = -5
+
     def hide(self):
         self.hidden = True
 
@@ -24,7 +26,7 @@ class Button:
             if self.destroy_on_click:
                 self.destroy()
 
-    def __init__(self, pos_x, pos_y, width, height, handler=None, text="", font_size=32, font_color=(0, 0, 0), button_color=(255, 255, 255), hover_color=None, destroy_on_click=False, font_type='freesansbold.ttf'):
+    def __init__(self, pos_x, pos_y, width, height, handler=None, text="", font_size=32, font_color=(0, 0, 0), button_color=(255, 255, 255), hover_color=None, destroy_on_click=False, render_order=-5, font_type='freesansbold.ttf'):
         self.button_color = button_color
         self.pos_x = pos_x
         self.pos_y = pos_y
@@ -32,6 +34,7 @@ class Button:
         self.height = height
         self.font_type = font_type
         self.font_size = font_size
+        self.render_order = render_order
         if hover_color == None:
             self.hover_color = button_color
         else:
