@@ -1,6 +1,6 @@
 import pygame
-from object import Object
-from timer import Timer
+from backend.object import Object
+from backend.timer import Timer
 
 
 class Engine:
@@ -63,11 +63,16 @@ class Engine:
                 if key in self.key_down_handlers:
                     self.key_down_handlers[key]()
 
+            keys_to_remove = []
+
             for key in self.collision_handlers.keys():
                 if key[0].destroyed or key[1].destroyed:
-                    self.collision_handlers.pop(key)
+                    keys_to_remove.append(key)
                 elif key[0].check_collision(key[1]):
                     self.collision_handlers[key](key[0], key[1])
+
+            for key in keys_to_remove:
+                self.collision_handlers.pop(key)
 
             for timer in self.timers:
                 timer.update()

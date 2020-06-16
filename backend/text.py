@@ -1,5 +1,5 @@
 import pygame
-from engine import Engine
+from backend.engine import Engine
 
 
 class Text:

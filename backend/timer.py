@@ -9,7 +9,7 @@ class Timer:
         self.handler = handler
 
     def update(self):
-        from engine import Engine
+        from backend.engine import Engine
 
         self.time_left -= Engine.instance.delta_time
         if self.time_left <= 0:

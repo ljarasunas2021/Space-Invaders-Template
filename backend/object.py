@@ -18,7 +18,7 @@ class Object:
         self.render_order = render_order
         self.destroyed = False
 
-        from engine import Engine
+        from backend.engine import Engine
         self.engine = Engine.instance
 
         self.screen = self.engine.screen
